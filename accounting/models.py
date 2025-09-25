@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from django.utils import timezone
 
 class Users(AbstractUser):
   ROLE_CHOICES = [
@@ -32,5 +32,34 @@ class Accounts(models.Model):
   normal_balance = models.CharField(max_length=10, choices=NORMAL_BALANCE_CHOICES)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
+
+
+class Monthly_Balance(models.Model):
+  month_end = models.DateField(auto_now=False, null=False, blank=False)
+  total_assets = models.DecimalField(max_digits=15, decimal_places=2)
+  total_liabilities = models.DecimalField(max_digits=15, decimal_places=2)
+  total_equity = models.DecimalField(max_digits=15, decimal_places=2)
+  created_at = models.DateTimeField(auto_now_add=True)
+
   
-  
+class Balance_Sheet(models.Model):
+  account_id = models.ForeignKey(Accounts, on_delete=models.SET_NULL, null=True)
+  balance_date = models.DateTimeField(auto_now_add=True)
+  debit_balance = models.DecimalField(max_digits=15, decimal_places=2, null=True, default=0)
+  credit_balance = models.DecimalField(max_digits=15, decimal_places=2, null=True, default=0)
+
+
+class Transactions(models.Model):
+  created_by = models.ForeignKey(Users, on_delete=models.SET_NULL, null=True)
+  transaction_date = models.DateField(default=timezone.now)
+  description = models.CharField(max_length=255, null=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+class Transaction_Lines(models.Model):
+  transaction_id = models.ForeignKey(Transactions, on_delete=models.SET_NULL, null=True)
+  account_id = models.ForeignKey(Accounts, on_delete=models.SET_NULL, null=True)
+  debit_amount = models.DecimalField(max_digits=15, decimal_places=2, null=True, default=0)
+  credit_amount = models.DecimalField(max_digits=15, decimal_places=2, null=True, default=0)
+  notes = models.CharField(max_length=255)
+
+
