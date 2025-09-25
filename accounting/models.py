@@ -13,7 +13,7 @@ class Users(AbstractUser):
 
 
 
-class Accounts(models.Model):
+class Account(models.Model):
   ACCOUNT_TYPE_CHOICES = [
     ('asset', 'Asset'),
     ('liability', 'Liability'),
@@ -43,21 +43,21 @@ class Monthly_Balance(models.Model):
 
   
 class Balance_Sheet(models.Model):
-  account_id = models.ForeignKey(Accounts, on_delete=models.SET_NULL, null=True)
+  account_id = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
   balance_date = models.DateTimeField(auto_now_add=True)
   debit_balance = models.DecimalField(max_digits=15, decimal_places=2, null=True, default=0)
   credit_balance = models.DecimalField(max_digits=15, decimal_places=2, null=True, default=0)
 
 
-class Transactions(models.Model):
+class Transaction(models.Model):
   created_by = models.ForeignKey(Users, on_delete=models.SET_NULL, null=True)
   transaction_date = models.DateField(default=timezone.now)
   description = models.CharField(max_length=255, null=True)
   created_at = models.DateTimeField(auto_now_add=True)
 
-class Transaction_Lines(models.Model):
-  transaction_id = models.ForeignKey(Transactions, on_delete=models.SET_NULL, null=True)
-  account_id = models.ForeignKey(Accounts, on_delete=models.SET_NULL, null=True)
+class Transaction_Line(models.Model):
+  transaction_id = models.ForeignKey(Transaction, on_delete=models.SET_NULL, null=True)
+  account_id = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
   debit_amount = models.DecimalField(max_digits=15, decimal_places=2, null=True, default=0)
   credit_amount = models.DecimalField(max_digits=15, decimal_places=2, null=True, default=0)
   notes = models.CharField(max_length=255)

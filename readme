@@ -13,3 +13,7 @@ AUTH_USER_MODEL = 'accounting.Users''
  
 
 ## adding a custom auth_user
+
+
+## Creating a SuperUser 
+python manage.py createsuperuser

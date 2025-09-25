@@ -1,9 +1,9 @@
 from django.db import models
-from accounting.models import Transactions, Users, Accounts
+from accounting.models import Transaction, Users, Account
 # Create your models here.
 
 
-class User_Logs(models.Model):
+class User_Log(models.Model):
   USER_ACTION_CHOICES = [
     ('login', 'LOGIN'),
     ('logout', 'LOGOUT'),
@@ -24,14 +24,14 @@ class User_Logs(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Account_Logs(models.Model):
+class Account_Log(models.Model):
   ACCOUNT_ACTION_CHOICES = [
     ('created', 'CREATED'),
     ('updated', 'UPDATED'),
     ('deleted', 'DELETED')
   ]
 
-  account_id = models.ForeignKey(Accounts, on_delete=models.SET_NULL, null=True)
+  account_id = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
   action = models.CharField(max_length=10, choices=ACCOUNT_ACTION_CHOICES)
   field_changed = models.CharField(max_length=25)
   old_value = models.CharField(max_length=255)
@@ -40,9 +40,9 @@ class Account_Logs(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Transaction_Logs(models.Model):
-  transaction_id = models.ForeignKey(Transactions, on_delete=models.SET_NULL, null=True)
-  account_id = models.ForeignKey(Accounts, on_delete=models.SET_NULL, null=True)
+class Transaction_Log(models.Model):
+  transaction_id = models.ForeignKey(Transaction, on_delete=models.SET_NULL, null=True)
+  account_id = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
   debit_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0, null=True)
   credit_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0, null=True)
   description = models.CharField(max_length=255)
