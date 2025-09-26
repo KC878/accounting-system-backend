@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'accountingfront',
     'debug_toolbar',
     'accounting',
-    'logs'
+    'logs',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

@@ -52,3 +52,9 @@ You should see that settings.py is gone from all previous commits.
 Optional: If you want to keep it in your working directory for local use, just copy it back after the filter and add it to .gitignore so it’s never tracked again:
 
 accountingfront/settings.py
+
+
+
+## Installing Django restframework
+
+pip install djangorestframework

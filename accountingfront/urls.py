@@ -22,5 +22,7 @@ from accounting import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include(debug_toolbar.urls)),
-    path('accounting/test/', views.test, name="test")
+    path('accounting/test/', views.test, name="test"),
+
+    path('', include('api.urls'))
 ]
