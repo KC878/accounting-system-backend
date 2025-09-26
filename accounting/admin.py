@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import Users, Account, Transaction, Transaction_Line, Balance_Sheet, Monthly_Balance
+from . models import Users, Account, Transaction, TransactionLine, BalanceSheet, MonthlyBalance
 from utils.all_fields import all_fields
 
 ### 
@@ -18,16 +18,16 @@ class AccountAdmin(admin.ModelAdmin):
 class TransactionAdmin(admin.ModelAdmin):
   list_display = all_fields(Transaction)
 
-@admin.register(Transaction_Line)
-class Transaction_LinesAdmin(admin.ModelAdmin):
-  list_display = all_fields(Transaction_Line)
+@admin.register(TransactionLine)
+class TransactionLinesAdmin(admin.ModelAdmin):
+  list_display = all_fields(TransactionLine)
   list_select_related = ['transaction_id', 'account_id']
 
-@admin.register(Balance_Sheet)
-class Balance_SheetAdmin(admin.ModelAdmin):
-  list_display = all_fields(Balance_Sheet)
+@admin.register(BalanceSheet)
+class BalanceSheetAdmin(admin.ModelAdmin):
+  list_display = all_fields(BalanceSheet)
   list_select_related = ['account_id']
 
-@admin.register(Monthly_Balance)
-class Monthly_BalanceAdmin(admin.ModelAdmin):
-  list_display = all_fields(Monthly_Balance)
+@admin.register(MonthlyBalance)
+class MonthlyBalanceAdmin(admin.ModelAdmin):
+  list_display = all_fields(MonthlyBalance)

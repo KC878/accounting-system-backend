@@ -36,7 +36,7 @@ class Account(models.Model):
   updated_at = models.DateTimeField(auto_now=True)
 
 
-class Monthly_Balance(models.Model):
+class MonthlyBalance(models.Model):
   month_end = models.DateField(auto_now=False, null=False, blank=False)
   total_assets = models.DecimalField(max_digits=MONEY_MAX_DIGITS, decimal_places=MONEY_DECIMAL_PLACES)
   total_liabilities = models.DecimalField(max_digits=MONEY_MAX_DIGITS, decimal_places=MONEY_DECIMAL_PLACES)
@@ -52,7 +52,7 @@ class Monthly_Balance(models.Model):
       raise ValidationError("Assets must equal Liabilities + Equity")
 
   
-class Balance_Sheet(models.Model):
+class BalanceSheet(models.Model):
   account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name='balance_sheets')
   balance_date = models.DateTimeField(auto_now_add=True)
   debit_balance = models.DecimalField(max_digits=MONEY_MAX_DIGITS, decimal_places=MONEY_DECIMAL_PLACES, null=True, default=0)
@@ -79,7 +79,7 @@ class Transaction(models.Model):
       models.Index(fields=['created_by']),
     ]
 
-class Transaction_Line(models.Model):
+class TransactionLine(models.Model):
   transaction = models.ForeignKey(Transaction, on_delete=models.SET_NULL, null=True, related_name='transaction_lines')
   account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, related_name='transaction_lines')
   debit_amount = models.DecimalField(max_digits=MONEY_MAX_DIGITS, decimal_places=MONEY_DECIMAL_PLACES, null=True, default=0)

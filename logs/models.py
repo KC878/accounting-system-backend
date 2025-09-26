@@ -3,7 +3,7 @@ from accounting.models import Transaction, Users, Account
 # Create your models here.
 
 
-class User_Log(models.Model):
+class UserLog(models.Model):
   USER_ACTION_CHOICES = [
     ('login', 'LOGIN'),
     ('logout', 'LOGOUT'),
@@ -24,7 +24,7 @@ class User_Log(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Account_Log(models.Model):
+class AccountLog(models.Model):
   ACCOUNT_ACTION_CHOICES = [
     ('created', 'CREATED'),
     ('updated', 'UPDATED'),
@@ -40,7 +40,7 @@ class Account_Log(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Transaction_Log(models.Model):
+class TransactionLog(models.Model):
   transaction_id = models.ForeignKey(Transaction, on_delete=models.SET_NULL, null=True)
   account_id = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
   debit_amount = models.DecimalField(max_digits=15, decimal_places=2, default=0, null=True)
