@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'accounting',
     'logs',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # corsheader
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware'
+]
+
+CORS_ALLOWED_ORIGINS = [
+  'http://localhost:3000' # set one here only allows this site
 ]
 
 INTERNAL_IPS = [
