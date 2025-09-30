@@ -58,3 +58,20 @@ accountingfront/settings.py
 ## Installing Django restframework
 
 pip install djangorestframework
+
+
+
+# About Serializer --
+- its basically converting complex query set to dictionary and to JSON 
+
+-> From Database = querysets 
+-> From serializer(queryset) = Python dictionary
+-> Dictionary can be converted to JSON format to communicate with the web app 
+
+
+# All About HTTP Status Codes 
+1xx is informational 
+2xx is sucerss 
+3xx is forwaring 
+4xx error response 
+5xx backend type of error 
