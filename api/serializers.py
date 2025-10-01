@@ -38,3 +38,8 @@ class UserSerializer(serializers.ModelSerializer):
     if "password" in validated_data:
       instance.set_password(validated_data.pop("password"))
     return super().update(instance, validated_data)
+
+
+class LoginSerializer(serializers.Serializer):
+  username = serializers.CharField()
+  password = serializers.CharField(write_only=True)
