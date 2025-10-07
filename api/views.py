@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from django.contrib.sessions.models import Session
 from accounting.models import Users
 from . serializers import UserSerializer, LoginSerializer
 from django.contrib.auth import authenticate, login
@@ -41,11 +42,12 @@ def userLogin(request):
   password = serializer.validated_data['password']
 
   user = authenticate(username=username, password=password)
-  if user is not None:
-     login(request, user) # Django sets session automatically 
 
-     # Set your own cookie explicityly
-     return Response({"message:" "Logged in succesfully"}, status=status.HTTP_200_OK)
+  if user is not None:
+    login(request, user) # Django sets session automatically 
+    sessionid = request.session.session_key
+    # Set your own cookie explicityly
+    return Response({"message": "Logged in succesfully", "sessionid": sessionid}, status=status.HTTP_200_OK)
      
   else:
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
