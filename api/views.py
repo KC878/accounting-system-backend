@@ -42,7 +42,9 @@ def userLogin(request):
 
   user = authenticate(username=username, password=password)
   if user is not None:
-     login(request, user) # Django sets the session cookie automatically with this
+     login(request, user) # Django sets session automatically 
+
+     # Set your own cookie explicityly
      return Response({"message:" "Logged in succesfully"}, status=status.HTTP_200_OK)
      
   else:

@@ -5,13 +5,15 @@ services:
     build:
       context: .
     container_name: accounting_backend
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py migrate && python manage.py runserver_plus --cert-file /app/certs/localhost.pem --key-file /app/certs/localhost-key.pem 0.0.0.0:8000"
     volumes:
       - .:/app
+      - /app/certs
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -26,6 +28,11 @@ services:
     image: mysql:8.0
     container_name: mysql_db
     restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}

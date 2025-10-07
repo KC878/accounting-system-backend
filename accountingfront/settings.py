@@ -43,9 +43,12 @@ INSTALLED_APPS = [
     'logs',
     'rest_framework',
     'corsheaders',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
+    # corsheader
+    'corsheaders.middleware.CorsMiddleware', # must be first 
     'django.middleware.security.SecurityMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -54,16 +57,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # corsheader
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-  'http://localhost:3000' # set one here only allows this site
-]
+CORS_ALLOWED_ORIGINS = ['https://localhost:3000']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:3000']
+
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True # True if usign HTTPs
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
 
 INTERNAL_IPS = [
   #
@@ -101,7 +108,7 @@ DATABASES = {
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT', 3306),
+        'PORT': config('DB_PORT'),
     }
 }
 
