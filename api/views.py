@@ -50,8 +50,12 @@ def userLogin(request):
     sessionid = request.session.session_key
     csrf_token = get_token(request)
 
+
+    # Get data of that particular user
+    user_data = Users.objects.filter(id=request.user.id).values('first_name', 'last_name', 'role').first()
+
     # Set your own cookie explicityly
-    return Response({"message": "Logged in succesfully", "sessionid": sessionid, "csrftoken": csrf_token}, status=status.HTTP_200_OK)
+    return Response({"message": "Logged in succesfully", "user": user_data, "sessionid": sessionid, "csrftoken": csrf_token}, status=status.HTTP_200_OK)
      
   else:
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
