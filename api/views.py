@@ -5,8 +5,10 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.contrib.sessions.models import Session
 from accounting.models import Users
 from . serializers import UserSerializer, LoginSerializer
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.middleware.csrf import get_token
 from rest_framework.authtoken.models import Token
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsAdminUser])
@@ -46,8 +48,16 @@ def userLogin(request):
   if user is not None:
     login(request, user) # Django sets session automatically 
     sessionid = request.session.session_key
+    csrf_token = get_token(request)
+
     # Set your own cookie explicityly
-    return Response({"message": "Logged in succesfully", "sessionid": sessionid}, status=status.HTTP_200_OK)
+    return Response({"message": "Logged in succesfully", "sessionid": sessionid, "csrftoken": csrf_token}, status=status.HTTP_200_OK)
      
   else:
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def userLogout(request):
+  logout(request)
+  return Response({"message": "Logged out successfully"})
