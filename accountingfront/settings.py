@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config, Csv
+import socket
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -70,6 +71,9 @@ INTERNAL_IPS = [
     "127.0.0.1",
   # 
 ]
+# This part automatically detects your Docker host IP
+hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS += [ip[:-1] + "1" for ip in ips]
 
 ROOT_URLCONF = 'accountingfront.urls'
 
