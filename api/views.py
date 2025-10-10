@@ -2,10 +2,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from django.contrib.sessions.models import Session
 from accounting.models import Users
 from . serializers import UserSerializer, LoginSerializer
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.middleware.csrf import get_token
 from rest_framework.authtoken.models import Token
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated, IsAdminUser])
@@ -41,9 +44,25 @@ def userLogin(request):
   password = serializer.validated_data['password']
 
   user = authenticate(username=username, password=password)
+
   if user is not None:
-     login(request, user) # Django sets the session cookie automatically with this
-     return Response({"message:" "Logged in succesfully"}, status=status.HTTP_200_OK)
+    login(request, user) # Django sets session automatically 
+    sessionid = request.session.session_key
+    csrf_token = get_token(request)
+
+
+    # Get data of that particular user
+    user_data = Users.objects.filter(id=request.user.id).values('username', 'first_name', 'last_name', 'role').first()
+
+    # Set your own cookie explicityly
+    return Response({"message": "Logged in succesfully", "user": user_data, "sessionid": sessionid, "csrftoken": csrf_token}, status=status.HTTP_200_OK)
      
   else:
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def userLogout(request):
+  logout(request)
+  return Response({"message": "Logged out successfully"})
