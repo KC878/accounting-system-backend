@@ -11,8 +11,13 @@ class Users(AbstractUser):
     ('admin', 'Admin'),
     ('accountant', 'Accountant'),
   ]
+  SEX_CHOICES = [
+    ('male', 'male'),
+    ('female', 'female'),
+  ]
 
   role = models.CharField(max_length=15, choices=ROLE_CHOICES, default='accountant')
+  sex = models.CharField(max_length=6, choices=SEX_CHOICES, default='')
 
 
 class Account(models.Model):
