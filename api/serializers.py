@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     model = Users # model to serialize
     #fields = '__all__' # all the fields 
 
-    fields = ["password", "username", "first_name", "last_name", "email"]
+    fields = ["password", "username", "first_name", "last_name", "email", "sex"]
     extra_kwargs = {
       "password": {"write_only": True} # don't expose in response  
     }
@@ -26,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
       email=validated_data["email"],
       first_name=validated_data.get("first_name"),
       last_name=validated_data.get("last_name"),
+      sex=validated_data.get("sex"),
     )
 
     user.set_password(validated_data["password"]) # hash password

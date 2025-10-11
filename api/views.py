@@ -52,7 +52,7 @@ def userLogin(request):
 
 
     # Get data of that particular user
-    user_data = Users.objects.filter(id=request.user.id).values('username', 'first_name', 'last_name', 'role').first()
+    user_data = Users.objects.filter(id=request.user.id).values('username', 'first_name', 'last_name', 'role', 'sex').first()
 
     # Set your own cookie explicityly
     return Response({"message": "Logged in succesfully", "user": user_data, "sessionid": sessionid, "csrftoken": csrf_token}, status=status.HTTP_200_OK)
