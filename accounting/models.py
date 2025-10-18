@@ -40,6 +40,9 @@ class Account(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
+  def __str__(self):
+    return self.account_name
+
 
 class MonthlyBalance(models.Model):
   month_end = models.DateField(auto_now=False, null=False, blank=False)
@@ -83,6 +86,9 @@ class Transaction(models.Model):
       models.Index(fields=['transaction_date']),
       models.Index(fields=['created_by']),
     ]
+  
+  def __str__(self):
+    return self.description
 
 class TransactionLine(models.Model):
   transaction = models.ForeignKey(Transaction, on_delete=models.SET_NULL, null=True, related_name='transaction_lines')
@@ -94,10 +100,11 @@ class TransactionLine(models.Model):
   # rejects if entered at database debit and credit are 0 both
   class Meta:
     constraints = [
-      models.CheckConstraint(
-        check=models.Q(debit_amount=0, credit_amount=0),
-        name='debit_or_credit_nonzero'
-      )
+        models.CheckConstraint(
+            check=~(models.Q(debit_amount=0) & models.Q(credit_amount=0)),
+            name='debit_or_credit_nonzero',
+        )
     ]
+
 
 

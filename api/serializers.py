@@ -1,7 +1,6 @@
 from rest_framework import serializers 
 from accounting.models import Users, Account, Transaction, TransactionLine, BalanceSheet, MonthlyBalance
 
-
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
     model = Users # model to serialize
@@ -44,3 +43,42 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
   username = serializers.CharField()
   password = serializers.CharField(write_only=True)
+
+
+
+
+#AccountSerializer (read-only)
+class AccountSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Account
+    fields = ['id', 'account_name', 'account_type', 'normal_balance']
+
+
+#TransactionLineSerializer (nested inside transaction)
+class TransactionLineSerializer(serializers.ModelSerializer):
+    account_name = serializers.CharField(write_only=True)  # input only
+    account = AccountSerializer(read_only=True)  # output only
+
+    class Meta:
+        model = TransactionLine
+        fields = ['account', 'account_name', 'debit_amount', 'credit_amount', 'notes']
+
+
+#Transactionserializser (main parent)
+class TransactionSerializer(serializers.ModelSerializer):
+    transaction_lines = TransactionLineSerializer(many=True)
+
+    class Meta:
+        model = Transaction
+        fields = ['id', 'created_by', 'transaction_date', 'description', 'transaction_lines']
+
+    def create(self, validated_data):
+        lines_data = validated_data.pop('transaction_lines')
+        transaction = Transaction.objects.create(**validated_data)
+
+        for line_data in lines_data:
+            account_name = line_data.pop('account_name')
+            account, _ = Account.objects.get_or_create(account_name=account_name)
+            TransactionLine.objects.create(transaction=transaction, account=account, **line_data)
+
+        return transaction

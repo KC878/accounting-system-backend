@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.contrib.sessions.models import Session
 from accounting.models import Users
-from . serializers import UserSerializer, LoginSerializer
+from . serializers import UserSerializer, LoginSerializer, TransactionSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
 from rest_framework.authtoken.models import Token
@@ -66,3 +66,15 @@ def userLogin(request):
 def userLogout(request):
   logout(request)
   return Response({"message": "Logged out successfully"})
+
+
+# Post Tranaction
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def postTrasaction(request):
+  serializer = TransactionSerializer(data=request.data)
+  if serializer.is_valid():
+    transaction = serializer.save() # call the create() method in serializer
+    
+    return Response(TransactionSerializer(transaction).data, status=status.HTTP_201_CREATED)
+  return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
