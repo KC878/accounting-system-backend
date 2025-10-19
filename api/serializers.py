@@ -51,34 +51,41 @@ class LoginSerializer(serializers.Serializer):
 class AccountSerializer(serializers.ModelSerializer):
   class Meta:
     model = Account
-    fields = ['id', 'account_name', 'account_type', 'normal_balance']
+    fields = ['id', 'account_name', 'account_type', 'normal_balance']  # accept this defined text 
+
 
 
 #TransactionLineSerializer (nested inside transaction)
 class TransactionLineSerializer(serializers.ModelSerializer):
-    account_name = serializers.CharField(write_only=True)  # input only
-    account = AccountSerializer(read_only=True)  # output only
+    account_name = serializers.CharField(write_only=True)  # input only --> receive 
+    account = AccountSerializer(read_only=True)  # output only --> output
 
     class Meta:
         model = TransactionLine
         fields = ['account', 'account_name', 'debit_amount', 'credit_amount', 'notes']
 
 
-#Transactionserializser (main parent)
+#TransactionSerializer (main parent)
 class TransactionSerializer(serializers.ModelSerializer):
-    transaction_lines = TransactionLineSerializer(many=True)
+  created_by = serializers.SlugRelatedField( # syntax to look for related field 
+    slug_field='username',  # lookup by username
+    queryset=Users.objects.all() 
+  )
+  transaction_lines = TransactionLineSerializer(many=True)
 
-    class Meta:
-        model = Transaction
-        fields = ['id', 'created_by', 'transaction_date', 'description', 'transaction_lines']
+  class Meta:
+    model = Transaction
+    fields = ['id', 'created_by', 'transaction_date', 'description', 'transaction_lines']
 
-    def create(self, validated_data):
-        lines_data = validated_data.pop('transaction_lines')
-        transaction = Transaction.objects.create(**validated_data)
+  def create(self, validated_data):
+    lines_data = validated_data.pop('transaction_lines')
+    transaction = Transaction.objects.create(**validated_data)
 
-        for line_data in lines_data:
-            account_name = line_data.pop('account_name')
-            account, _ = Account.objects.get_or_create(account_name=account_name)
-            TransactionLine.objects.create(transaction=transaction, account=account, **line_data)
+    for line_data in lines_data:
+        account_name = line_data.pop('account_name')
+        account, _ = Account.objects.get_or_create(account_name=account_name)
+        TransactionLine.objects.create(transaction=transaction, account=account, **line_data)
 
-        return transaction
+    return transaction
+
+
